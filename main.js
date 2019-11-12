@@ -10,7 +10,11 @@ let addWindow;
 // Listen for app to be ready
 app.on('ready', function(){
     //Create new window
-    mainWindow = new BrowserWindow({});
+    mainWindow = new BrowserWindow({
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
     //Load html into window
     mainWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'mainWindow.html'),
@@ -34,7 +38,10 @@ function createAddWindow(){
  addWindow = new BrowserWindow({
      width: 300,
      height: 200,
-     title: 'Add shopping list Item'
+     title: 'Add shopping list Item',
+     webPreferences: {
+        nodeIntegration: true
+    }
  });
  //Load html into window
  addWindow.loadURL(url.format({
@@ -50,7 +57,6 @@ function createAddWindow(){
 
 //Catch item:add
 ipcMain.on('item:add',function(e, item){
-    console.log(item);
     mainWindow.webContents.send('item:add', item);
     addWindow.close();
 });
