@@ -6,6 +6,7 @@ const {app, BrowserWindow, Menu, ipcMain} = electron;
 
 let mainWindow;
 let addWindow;
+let addTestWindow;
 
 // Listen for app to be ready
 app.on('ready', function(){
@@ -43,23 +44,49 @@ function createAddWindow(){
         nodeIntegration: true
     }
  });
+
  //Load html into window
  addWindow.loadURL(url.format({
      pathname: path.join(__dirname, 'addWindow.html'),
      protocol: 'file:',
      slashes: true
  }));
+
  // Garbage collection handle
  addWindow.on('close', function(){
      addWindow = null;
  })
-}
 
-//Catch item:add
+ //Catch item:add
 ipcMain.on('item:add',function(e, item){
     mainWindow.webContents.send('item:add', item);
     addWindow.close();
 });
+}
+
+ //###################TEST#####################
+
+ //Creat new window
+ function createAddTestWindow(){
+    addTestWindow = new BrowserWindow({
+        width: 500,
+        height: 500,
+        title: 'Test',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+
+
+    //Load html into window
+    addTestWindow.loadURL(url.format({
+        pathname: path.join(__dirname, 'addTestWindow.html'),
+        protocol: 'file:',
+        slashes: true
+    }));
+}
+
+
 
 //Create menu template
 const mainMenuTemplate = [
@@ -83,6 +110,12 @@ const mainMenuTemplate = [
                 accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
                 click(){
                     app.quit();
+                }
+            },
+            {
+                label: 'Test',
+                click(){
+                    createAddTestWindow();
                 }
             }
         ]
